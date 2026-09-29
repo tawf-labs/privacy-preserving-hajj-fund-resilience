@@ -1,0 +1,21 @@
+[profile.default]
+src = "src"
+out = "out"
+libs = ["lib"]
+solc_version = "0.8.31"
+optimizer = true
+optimizer_runs = 1
+# The generated UltraHONK verifier exceeds the stack limit under via_ir; compile it the legacy way.
+via_ir = false
+evm_version = "cancun"
+fs_permissions = [{ access = "read", path = "./test/fixtures" }]
+remappings = [
+    "@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/",
+    "forge-std/=lib/forge-std/src/",
+]
+
+[rpc_endpoints]
+sepolia = "${SEPOLIA_RPC_URL}"
+
+[etherscan]
+sepolia = { key = "${ETHERSCAN_API_KEY}" }

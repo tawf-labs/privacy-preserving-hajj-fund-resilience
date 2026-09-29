@@ -18,7 +18,9 @@
     "e2e": "bash scripts/e2e-pipeline.sh"
   },
   "devDependencies": {
+    "@foundry-rs/forge": "1.7.1",
     "@types/node": "^22.10.0",
+    "solc": "0.8.31",
     "tsx": "^4.20.0",
     "typescript": "^5.8.0",
     "vitest": "^3.2.0"

@@ -20,3 +20,6 @@ circuits/**/target/*
 
 # Evaluation scratch
 evaluation/.cache/
+
+# Solidity deps are fetched by scripts/install-contract-deps.sh
+contracts/lib/
