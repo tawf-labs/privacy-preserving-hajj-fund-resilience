@@ -141,7 +141,7 @@ scripts/                  e2e pipeline, forge wrapper, SRS setup
 * **Synthetic and stylised.** The model is a deterministic, deliberately simple liability/asset projection, not BPKH's
   actuarial model. Results show the mechanism works, not that any real fund is solvent.
 * **Not audited.** Do not secure real value with this code. See [docs/threat-model.md](docs/threat-model.md).
-* Browser proving is not implemented; the portal *verifies* in the browser, proving happens in the attestor/prover.
+* The portal verifies proofs in the browser but does not generate them. Proving runs in the attestor/prover, next to the authenticated inputs, so the fund's data never has to reach a viewer's browser.
 * There are no native `nargo test` unit tests: circuit behaviour is covered by the TypeScript suite (completeness,
   soundness and the differential fuzz), which executes the compiled circuit.
 
