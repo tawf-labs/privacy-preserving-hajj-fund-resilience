@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-29T17:04:36.975Z",
+  "generatedAt": "2026-09-29T17:25:20.668Z",
   "environment": {
     "node": "v22.22.2",
     "os": "linux 6.18.44-fc-v37",
@@ -14,92 +14,93 @@
     "acirOpcodes": 4201,
     "gates": 68941,
     "gatesDyadic": 131072,
-    "compileMs": 1144.9,
+    "compileMs": 1128.7,
     "publicInputs": 41,
     "verificationKeyBytes": 1888
   },
   "performance": {
     "witnessMs": {
-      "avg": 31.354277000000366,
-      "min": 27.695213999999396,
-      "max": 45.848353000001225,
+      "avg": 30.992487700000858,
+      "min": 28.07323600000018,
+      "max": 44.47258300000249,
       "n": 10
     },
     "proveMs": {
-      "avg": 1488.4998730000004,
-      "min": 1410.5891179999999,
-      "max": 1598.6636260000014,
+      "avg": 1491.2184857000002,
+      "min": 1396.5904730000002,
+      "max": 1671.8930760000003,
       "n": 10
     },
     "verifyMs": {
-      "avg": 515.3734326000001,
-      "min": 483.93824800000584,
-      "max": 536.7083270000003,
+      "avg": 511.9826712999999,
+      "min": 486.76255200000014,
+      "max": 533.7417270000005,
       "n": 10
     },
     "proofBytes": 9152,
-    "peakRssMbAfterMain": 615,
-    "peakRssMbTotal": 615
+    "peakRssMbAfterMain": 565,
+    "peakRssMbTotal": 565
   },
   "horizonScaling": [
     {
       "h": 5,
-      "compileMs": 464.2,
+      "compileMs": 490.7,
       "acirOpcodes": 3256,
       "gates": 66501,
       "gatesDyadic": 131072,
       "prove": {
-        "avg": 1467.6465036666657,
-        "min": 1378.3988559999998,
-        "max": 1555.4956699999966,
+        "avg": 1361.9296619999998,
+        "min": 1334.7738739999986,
+        "max": 1380.305782000003,
         "n": 3
       },
       "proofBytes": 9152
     },
     {
       "h": 10,
-      "compileMs": 1144.9,
+      "compileMs": 1128.7,
       "acirOpcodes": 4201,
       "gates": 68941,
       "gatesDyadic": 131072,
       "prove": {
-        "avg": 1552.6024973333358,
-        "min": 1456.7541320000018,
-        "max": 1629.313227999999,
+        "avg": 1436.0052593333337,
+        "min": 1415.0289170000033,
+        "max": 1451.2385809999978,
         "n": 3
       },
       "proofBytes": 9152
     },
     {
       "h": 20,
-      "compileMs": 550.7,
+      "compileMs": 473.9,
       "acirOpcodes": 6091,
       "gates": 73824,
       "gatesDyadic": 131072,
       "prove": {
-        "avg": 1648.4156306666675,
-        "min": 1617.3592839999983,
-        "max": 1684.184795000001,
+        "avg": 1616.272564333335,
+        "min": 1527.6729300000006,
+        "max": 1731.1647650000014,
         "n": 3
       },
       "proofBytes": 9152
     },
     {
       "h": 30,
-      "compileMs": 471.4,
+      "compileMs": 476.8,
       "acirOpcodes": 7981,
       "gates": 78706,
       "gatesDyadic": 131072,
       "prove": {
-        "avg": 1603.0790503333312,
-        "min": 1563.2207070000004,
-        "max": 1674.2476480000041,
+        "avg": 1626.1412659999987,
+        "min": 1594.728621000002,
+        "max": 1664.3014569999941,
         "n": 3
       },
       "proofBytes": 9152
     }
   ],
   "onChain": {
-    "submitProof": 2857322
+    "submitProofCancun": 2857322,
+    "submitProofOsaka": 4115356
   }
 }

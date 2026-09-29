@@ -45,7 +45,7 @@ export async function loadResults() {
     get<{
       circuit: { gates: number; gatesDyadic: number; acirOpcodes: number; verificationKeyBytes: number };
       performance: { proveMs: { avg: number }; verifyMs: { avg: number }; proofBytes: number };
-      onChain: { submitProof?: number };
+      onChain: { submitProofCancun?: number; submitProofOsaka?: number };
     }>('benchmark.json'),
   ]);
   return { der, stress, bench };

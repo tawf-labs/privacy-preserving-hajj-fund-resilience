@@ -21,31 +21,34 @@
 | Circuit size (dyadic) | 131,072 |
 | Public inputs | 41 |
 | Verification key | 1,888 B |
-| Compile time | 1144.9 ms |
+| Compile time | 1128.7 ms |
 
 ## Performance (avg (min - max), ms)
 
 | Metric | Value |
 | --- | --- |
-| Witness generation | 31.4 (27.7 - 45.8) |
-| Proof generation | 1488.5 (1410.6 - 1598.7) |
-| Proof verification (bb.js) | 515.4 (483.9 - 536.7) |
+| Witness generation | 31.0 (28.1 - 44.5) |
+| Proof generation | 1491.2 (1396.6 - 1671.9) |
+| Proof verification (bb.js) | 512.0 (486.8 - 533.7) |
 | Proof size | 9,152 B |
-| Peak RSS (after main run) | 615 MB |
+| Peak RSS (after main run) | 565 MB |
 
 ## Horizon scaling
 
 | H (years) | ACIR opcodes | Gates | Circuit size | Compile (ms) | Prove avg (ms) | Prove min-max (ms) | Proof (B) |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| 5 | 3,256 | 66,501 | 131,072 | 464.2 | 1468 | 1378 - 1555 | 9,152 |
-| 10 | 4,201 | 68,941 | 131,072 | 1144.9 | 1553 | 1457 - 1629 | 9,152 |
-| 20 | 6,091 | 73,824 | 131,072 | 550.7 | 1648 | 1617 - 1684 | 9,152 |
-| 30 | 7,981 | 78,706 | 131,072 | 471.4 | 1603 | 1563 - 1674 | 9,152 |
+| 5 | 3,256 | 66,501 | 131,072 | 490.7 | 1362 | 1335 - 1380 | 9,152 |
+| 10 | 4,201 | 68,941 | 131,072 | 1128.7 | 1436 | 1415 - 1451 | 9,152 |
+| 20 | 6,091 | 73,824 | 131,072 | 473.9 | 1616 | 1528 - 1731 | 9,152 |
+| 30 | 7,981 | 78,706 | 131,072 | 476.8 | 1626 | 1595 - 1664 | 9,152 |
 
 ## On-chain (Foundry, Solidity 0.8.31, optimizer runs=1)
 
-| Function | Gas |
-| --- | --- |
-| HajjSolvencyRegistry.submitProof (incl. UltraHONK verification) | 2,857,322 |
+| Function | EVM pricing | Gas |
+| --- | --- | --- |
+| HajjSolvencyRegistry.submitProof (incl. UltraHONK verification) | Cancun / Prague | 2,857,322 |
+| HajjSolvencyRegistry.submitProof (incl. UltraHONK verification) | Osaka (EIP-7883 modexp repricing) | 4,115,356 |
+
+Figures exclude the 21,000 base cost and calldata (~150k for a 9 KB proof). A local anvil transaction (Osaka pricing) used 4,285,115 gas in total.
 
 Proving runs on WASM (single-threaded in Node); native `bb` is typically several times faster.

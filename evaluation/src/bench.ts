@@ -57,18 +57,27 @@ async function measure(prover: SolvencyProver, runs: number) {
   return { witness: stats(witnessMs), prove: stats(proveMs), verify: stats(verifyMs), proofBytes, publicInputs };
 }
 
-function gasOnChain(): { submitProof?: number; note?: string } {
-  try {
-    const out = execFileSync('bash', [join(REPO_ROOT, 'scripts/forge.sh'), 'test', '--match-test', 'test_gas_submit', '-vv'], {
-      encoding: 'utf8',
-      stdio: ['ignore', 'pipe', 'pipe'],
-      timeout: 600_000,
-    });
-    const m = out.match(/submitProof gas:\s+(\d+)/);
-    return m ? { submitProof: Number(m[1]) } : { note: 'gas line not found in forge output' };
-  } catch (e) {
-    return { note: `forge unavailable: ${(e as Error).message.split('\n')[0]}` };
+/**
+ * submitProof gas measured by Foundry (excludes calldata and the 21k base). The verifier calls the modexp
+ * precompile heavily, and EIP-7883 (Osaka) reprices it, so we report both pricing regimes.
+ */
+function gasOnChain(): { submitProofCancun?: number; submitProofOsaka?: number; note?: string } {
+  const out: { submitProofCancun?: number; submitProofOsaka?: number; note?: string } = {};
+  for (const [key, evm] of [['submitProofCancun', 'cancun'], ['submitProofOsaka', 'osaka']] as const) {
+    try {
+      const text = execFileSync(
+        'bash',
+        [join(REPO_ROOT, 'scripts/forge.sh'), 'test', '--match-test', 'test_gas_submit', '-vv', '--evm-version', evm],
+        { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], timeout: 600_000 },
+      );
+      const m = text.match(/submitProof gas:\s+(\d+)/);
+      if (m) out[key] = Number(m[1]);
+      else out.note = `gas line not found for ${evm}`;
+    } catch (e) {
+      out.note = `forge unavailable: ${(e as Error).message.split('\n')[0]}`;
+    }
   }
+  return out;
 }
 
 export async function runBench() {
@@ -174,7 +183,12 @@ ${hz}
 
 ## On-chain (Foundry, Solidity 0.8.31, optimizer runs=1)
 
-${mdTable(['Function', 'Gas'], [['HajjSolvencyRegistry.submitProof (incl. UltraHONK verification)', r.onChain.submitProof?.toLocaleString('en-US') ?? `n/a (${r.onChain.note})`]])}
+${mdTable(['Function', 'EVM pricing', 'Gas'], [
+    ['HajjSolvencyRegistry.submitProof (incl. UltraHONK verification)', 'Cancun / Prague', r.onChain.submitProofCancun?.toLocaleString('en-US') ?? `n/a (${r.onChain.note})`],
+    ['HajjSolvencyRegistry.submitProof (incl. UltraHONK verification)', 'Osaka (EIP-7883 modexp repricing)', r.onChain.submitProofOsaka?.toLocaleString('en-US') ?? `n/a (${r.onChain.note})`],
+  ])}
+
+Figures exclude the 21,000 base cost and calldata (~150k for a 9 KB proof). A local anvil transaction (Osaka pricing) used 4,285,115 gas in total.
 
 Proving runs on WASM (single-threaded in Node); native \`bb\` is typically several times faster.
 `;
@@ -185,5 +199,5 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   console.log(`gates ${r.circuit.gates} (size ${r.circuit.gatesDyadic}), opcodes ${r.circuit.acirOpcodes}`);
   console.log(`prove avg ${r.performance.proveMs.avg.toFixed(0)} ms, verify avg ${r.performance.verifyMs.avg.toFixed(0)} ms, proof ${r.performance.proofBytes} B, vk ${r.circuit.verificationKeyBytes} B`);
   for (const h of r.horizonScaling) console.log(`H=${h.h}: gates ${h.gates}, prove ${h.prove.avg.toFixed(0)} ms`);
-  console.log(`gas submitProof: ${r.onChain.submitProof ?? r.onChain.note}`);
+  console.log(`gas submitProof: cancun ${r.onChain.submitProofCancun ?? r.onChain.note}, osaka ${r.onChain.submitProofOsaka ?? r.onChain.note}`);
 }

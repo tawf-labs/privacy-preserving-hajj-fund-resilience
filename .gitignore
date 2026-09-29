@@ -10,7 +10,7 @@ coverage/
 # Foundry
 contracts/out/
 contracts/cache/
-contracts/broadcast/*/31337/
+contracts/broadcast/
 
 # Noir: keep the committed circuit artifact + vk, ignore scratch outputs
 circuits/**/target/*

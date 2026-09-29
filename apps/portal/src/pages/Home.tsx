@@ -67,7 +67,7 @@ export function Home() {
               <Stat label="Data exposure reduction" value={derMin ? `${(derMin * 100).toFixed(2)}%` : '–'} hint="conservative, vs. full audit" />
               <Stat label="Proof size" value={res.bench ? kb(res.bench.performance.proofBytes) : '–'} hint="constant" />
               <Stat label="Verification" value={res.bench ? `${res.bench.performance.verifyMs.avg.toFixed(0)} ms` : '–'} hint="bb.js, WASM" />
-              <Stat label="On-chain gas" value={res.bench?.onChain.submitProof ? `${(res.bench.onChain.submitProof / 1e6).toFixed(2)}M` : '–'} hint="submitProof, incl. verify" />
+              <Stat label="On-chain gas" value={res.bench?.onChain.submitProofOsaka ? `${(res.bench.onChain.submitProofOsaka / 1e6).toFixed(1)}M` : '–'} hint="submitProof incl. verify, Osaka pricing" />
             </div>
           </Card>
         </section>
