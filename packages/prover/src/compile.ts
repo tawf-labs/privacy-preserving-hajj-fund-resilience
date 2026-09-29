@@ -3,7 +3,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { compile, createFileManager } from '@noir-lang/noir_wasm';
 import type { CompiledCircuit } from '@noir-lang/noir_js';
-import { CIRCUIT_ARTIFACT, CIRCUIT_DIR } from './paths.js';
+import { CIRCUIT_ARTIFACT, CIRCUIT_DIR, REPO_ROOT } from './paths.js';
 
 export interface CompileResult {
   program: CompiledCircuit & { noir_version?: string };
@@ -42,7 +42,19 @@ export function loadArtifact(path = CIRCUIT_ARTIFACT): CompileResult['program'] 
   return JSON.parse(readFileSync(path, 'utf8'));
 }
 
+/**
+ * The compiler records absolute source paths in the debug info. Rewrite them relative to the
+ * repository root so the committed artifact is identical on every machine (and CI can diff it).
+ */
+export function relativizeDebugPaths<T extends { file_map?: Record<string, { path?: string }> }>(program: T, root = REPO_ROOT): T {
+  const prefix = root.endsWith('/') ? root : `${root}/`;
+  for (const f of Object.values(program.file_map ?? {})) {
+    if (f.path?.startsWith(prefix)) f.path = f.path.slice(prefix.length);
+  }
+  return program;
+}
+
 export function saveArtifact(program: CompileResult['program'], path = CIRCUIT_ARTIFACT): void {
   mkdirSync(join(path, '..'), { recursive: true });
-  writeFileSync(path, JSON.stringify(program));
+  writeFileSync(path, JSON.stringify(relativizeDebugPaths(program as never)));
 }
