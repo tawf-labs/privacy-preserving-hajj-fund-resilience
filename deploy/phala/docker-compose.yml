@@ -16,7 +16,7 @@ services:
       - /var/run/dstack.sock:/var/run/dstack.sock
     environment:
       - PORT=8787
-      - COMMIT=9ba9f05a8d7c6302b0acaf554b13c86b24be6cea
+      - COMMIT=bb20ec1345578f9f8cddac336da97e8ecac8b55c
     command:
       - bash
       - -euc
