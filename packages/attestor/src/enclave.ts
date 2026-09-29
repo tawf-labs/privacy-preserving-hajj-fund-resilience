@@ -11,11 +11,17 @@
  * The signing key never leaves the enclave. `attestAndProve` also runs the prover
  * inside the boundary, so the witness itself never leaves: only the proof bundle does.
  *
- * What is simulated: the hardware root of trust. `report` stands in for an Intel TDX /
- * SGX quote (Phala dstack), with `enclaveMeasurement` playing the role of MRENCLAVE/MRTD.
+ * Key custody, in order of preference:
+ *   1. `ATTESTOR_SECRET_KEY` (explicit, operator-held);
+ *   2. Phala dstack KMS (`/var/run/dstack.sock`): the key is derived inside the TEE, bound to the
+ *      app id, and never known to any human. The report then carries a real Intel TDX quote;
+ *   3. the public development key (tests only; `usingDevKey` is reported by /info).
+ *
+ * Off-TEE the hardware root of trust is simulated: `report` is then a signed JSON document,
+ * with `enclaveMeasurement` (a hash of the source files) standing in for MRTD.
  */
-import { randomBytes } from 'node:crypto';
-import { readdirSync, readFileSync } from 'node:fs';
+import { createHash, randomBytes } from 'node:crypto';
+import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
@@ -36,6 +42,7 @@ import {
   type ProofBundle,
 } from '@hajj-zk/prover';
 import { validate, witnessToJson, type Ledger, type PrivateWitnessJson, type PublicParams } from '@hajj-zk/solvency-model';
+import { secp256k1 } from '@noble/curves/secp256k1.js';
 import { canonicalJson, sha256Hex } from './canonical.js';
 import {
   AttestationError,
@@ -56,7 +63,7 @@ export interface AttestationRequest {
 }
 
 export interface AttestationReport {
-  mode: 'simulated-tee';
+  mode: 'simulated-tee' | 'tdx';
   platform: string;
   enclaveMeasurement: string;
   circuitArtifactDigest: string;
@@ -67,8 +74,18 @@ export interface AttestationReport {
   sourceDigests: SourceRegistry['macro'];
   ledgerDigest: string;
   issuedAt: string;
+  /** Intel TDX quote (hex) whose report_data commits to `reportData`. Present only inside a real TEE. */
+  tdxQuote?: string;
   reportSignature: `0x${string}`;
 }
+
+export type KeySource = 'env' | 'dstack-kms' | 'dev';
+
+/** Returns a TDX quote whose report_data is the given 32 bytes. */
+export type QuoteFn = (reportData: Uint8Array) => Promise<string>;
+
+export const DSTACK_SOCKET = process.env.DSTACK_SOCKET ?? '/var/run/dstack.sock';
+const KMS_KEY_PATH = 'hajj-zk/attestor/secp256k1/v1';
 
 export interface AttestationResult {
   periodId: number;
@@ -94,20 +111,47 @@ export class SimulatedEnclave {
   readonly measurement: string;
   readonly circuitDigest: string;
   readonly usingDevKey: boolean;
+  readonly keySource: KeySource;
   private readonly secret: Uint8Array;
+  private readonly quoteFn?: QuoteFn;
   private prover: SolvencyProver | null = null;
   private keyHashCache: bigint | null = null;
 
   constructor(
     private readonly registry: SourceRegistry = loadRegistry(),
     secretHex = process.env.ATTESTOR_SECRET_KEY,
+    extras: { keySource?: KeySource; quoteFn?: QuoteFn } = {},
   ) {
     this.usingDevKey = !secretHex;
+    this.keySource = extras.keySource ?? (secretHex ? 'env' : 'dev');
+    this.quoteFn = extras.quoteFn;
     this.secret = secretHex ? Uint8Array.from(Buffer.from(secretHex.replace(/^0x/, ''), 'hex')) : DEV_ATTESTOR_SECRET;
     if (this.secret.length !== 32) throw new Error('ATTESTOR_SECRET_KEY must be 32 bytes of hex');
     this.publicKey = publicKeyFromSecret(this.secret);
     this.measurement = measureEnclave();
     this.circuitDigest = sha256Hex(readFileSync(CIRCUIT_ARTIFACT));
+  }
+
+  /**
+   * Chooses the key source for a running service: explicit env key, else the dstack KMS when the
+   * TEE socket is present, else the public dev key.
+   */
+  static async fromEnvironment(registry: SourceRegistry = loadRegistry()): Promise<SimulatedEnclave> {
+    const explicit = process.env.ATTESTOR_SECRET_KEY;
+    if (explicit || !existsSync(DSTACK_SOCKET)) return new SimulatedEnclave(registry, explicit);
+
+    const { DstackClient } = await import('@phala/dstack-sdk');
+    const client = new DstackClient(DSTACK_SOCKET);
+    const { key } = await client.getKey(KMS_KEY_PATH, 'signing');
+    // Expand the KMS key material into a valid secp256k1 scalar (domain-separated, rejection-sampled).
+    let secret: Uint8Array | undefined;
+    for (let i = 0; i < 256 && !secret; i++) {
+      const cand = createHash('sha256').update('hajj-zk/attestor/secp256k1').update(key).update(Buffer.from([i])).digest();
+      if (secp256k1.utils.isValidSecretKey(cand)) secret = cand;
+    }
+    if (!secret) throw new Error('could not derive a valid secp256k1 key from the KMS');
+    const quoteFn: QuoteFn = async (data) => (await client.getQuote(data)).quote;
+    return new SimulatedEnclave(registry, Buffer.from(secret).toString('hex'), { keySource: 'dstack-kms', quoteFn });
   }
 
   async keyHash(): Promise<bigint> {
@@ -117,11 +161,12 @@ export class SimulatedEnclave {
 
   async info() {
     return {
-      mode: 'simulated-tee' as const,
+      mode: this.quoteFn ? ('tdx' as const) : ('simulated-tee' as const),
       enclaveMeasurement: this.measurement,
       circuitArtifactDigest: this.circuitDigest,
       attestorKeyHash: toHex32(await this.keyHash()),
       publicKey: { x: hex(this.publicKey.x), y: hex(this.publicKey.y) },
+      keySource: this.keySource,
       usingDevKey: this.usingDevKey,
       periodId: this.registry.periodId,
       registeredSources: this.registry.macro,
@@ -148,17 +193,20 @@ export class SimulatedEnclave {
     const signature = signMessage(this.secret, message);
     const attestorKeyHash = toHex32(await this.keyHash());
 
+    const reportData = createHash('sha256').update(message).digest();
+    const tdxQuote = this.quoteFn ? await this.quoteFn(reportData) : undefined;
     const unsigned = {
-      mode: 'simulated-tee' as const,
-      platform: 'simulated (Phala dstack / Intel TDX ready)',
+      mode: tdxQuote ? ('tdx' as const) : ('simulated-tee' as const),
+      platform: tdxQuote ? 'Phala dstack / Intel TDX' : 'simulated (Phala dstack / Intel TDX ready)',
       enclaveMeasurement: this.measurement,
       circuitArtifactDigest: this.circuitDigest,
       attestorKeyHash,
       periodId: pub.periodId,
-      reportData: sha256Hex(message),
+      reportData: reportData.toString('hex'),
       sourceDigests: this.registry.macro,
       ledgerDigest: sha256Hex(canonicalJson(req.ledger)),
       issuedAt: new Date().toISOString(),
+      ...(tdxQuote ? { tdxQuote } : {}),
     };
     const reportDigest = Uint8Array.from(Buffer.from(sha256Hex(canonicalJson(unsigned)), 'hex'));
     const report: AttestationReport = { ...unsigned, reportSignature: hex(signMessage(this.secret, reportDigest)) };

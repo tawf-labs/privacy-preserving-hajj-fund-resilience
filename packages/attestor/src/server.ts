@@ -29,12 +29,13 @@ export function createApp(enclave = new SimulatedEnclave()) {
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) {
-  const enclave = new SimulatedEnclave();
+  const enclave = await SimulatedEnclave.fromEnvironment();
   const port = Number(process.env.PORT ?? 8787);
   serve({ fetch: createApp(enclave).fetch, port }, async () => {
     const info = await enclave.info();
-    console.log(`attestor (simulated TEE) listening on :${port}`);
+    console.log(`attestor listening on :${port}`);
     console.log(`  measurement ${info.enclaveMeasurement}`);
-    console.log(`  key hash    ${info.attestorKeyHash}${info.usingDevKey ? '  [DEV KEY: set ATTESTOR_SECRET_KEY]' : ''}`);
+    console.log(`  mode        ${info.mode}, key source: ${info.keySource}`);
+    console.log(`  key hash    ${info.attestorKeyHash}${info.usingDevKey ? '  [DEV KEY: set ATTESTOR_SECRET_KEY or run in a TEE]' : ''}`);
   });
 }

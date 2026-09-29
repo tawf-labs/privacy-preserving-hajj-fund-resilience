@@ -84,9 +84,18 @@ importers:
       '@hono/node-server':
         specifier: ^1.14.0
         version: 1.19.17(hono@4.13.11)
+      '@noble/curves':
+        specifier: ^2.0.0
+        version: 2.4.0
+      '@phala/dstack-sdk':
+        specifier: ^0.5.8
+        version: 0.5.8(@noble/curves@2.4.0)(@noble/hashes@2.4.0)(viem@2.57.0(typescript@5.9.3))
       hono:
         specifier: ^4.7.0
         version: 4.13.11
+      tsx:
+        specifier: ^4.20.0
+        version: 4.23.15
 
   packages/prover:
     dependencies:
@@ -488,6 +497,22 @@ packages:
 
   '@noir-lang/types@1.0.0-rc.3':
     resolution: {integrity: sha512-k1UHd67/OSPJb9E6WNKeMtuoDbflLpu803jtbaVqDlr2P/rH8+joDuIxK+nwBMVlnCO2LlcJaN4wpQ/TRHJ78w==}
+
+  '@phala/dstack-sdk@0.5.8':
+    resolution: {integrity: sha512-VANlyo0Jj6pxmJl3zksHJ4/5y3VflApVmgsfcfmokk3KYKRBkW5oMkexBTR6lZaGVPOqJ48QGOLP/7CF3IEvFg==}
+    engines: {node: '>=18.0.0'}
+    peerDependencies:
+      '@noble/curves': ^1.8.1
+      '@noble/hashes': ^1.6.1
+      '@solana/web3.js': ^1.98.4
+      viem: ^2.43.3
+    peerDependenciesMeta:
+      '@noble/curves':
+        optional: true
+      '@solana/web3.js':
+        optional: true
+      viem:
+        optional: true
 
   '@rolldown/pluginutils@1.0.0-rc.3':
     resolution: {integrity: sha512-eybk3TjzzzV97Dlj5c+XrBFW57eTNhzod66y9HrBlzJ6NsCrWCp/2kaPS3K9wJmurBC0Tdw4yPjXKZqlznim3Q==}
@@ -1650,6 +1675,13 @@ snapshots:
       '@noir-lang/types': 1.0.0-rc.3
 
   '@noir-lang/types@1.0.0-rc.3': {}
+
+  '@phala/dstack-sdk@0.5.8(@noble/curves@2.4.0)(@noble/hashes@2.4.0)(viem@2.57.0(typescript@5.9.3))':
+    dependencies:
+      '@noble/hashes': 2.4.0
+    optionalDependencies:
+      '@noble/curves': 2.4.0
+      viem: 2.57.0(typescript@5.9.3)
 
   '@rolldown/pluginutils@1.0.0-rc.3': {}
 

@@ -118,3 +118,40 @@ describe('attestor: HTTP API', () => {
     expect(await new SolvencyProver().verify(fromBundle(body.bundle))).toBe(true);
   });
 });
+
+describe('attestor: key custody and TDX quote', () => {
+  it('reports the key source and simulated mode by default', async () => {
+    const info = await enclave.info();
+    expect(info.keySource).toBe('dev');
+    expect(info.mode).toBe('simulated-tee');
+    expect(info.usingDevKey).toBe(true);
+  });
+
+  it('embeds a TDX quote bound to the signed message when a quote function is present', async () => {
+    const seen: Uint8Array[] = [];
+    const tee = new SimulatedEnclave(undefined, '11'.repeat(32), {
+      keySource: 'dstack-kms',
+      quoteFn: async (data) => {
+        seen.push(data);
+        return '0xabcdef';
+      },
+    });
+    const att = await tee.attest(request());
+    expect(att.report.mode).toBe('tdx');
+    expect(att.report.tdxQuote).toBe('0xabcdef');
+    expect(Buffer.from(seen[0]).toString('hex')).toBe(att.report.reportData);
+    expect((await tee.info()).keySource).toBe('dstack-kms');
+    expect((await tee.info()).usingDevKey).toBe(false);
+  });
+
+  it('fromEnvironment uses an explicit env key when set', async () => {
+    process.env.ATTESTOR_SECRET_KEY = '22'.repeat(32);
+    try {
+      const tee = await SimulatedEnclave.fromEnvironment();
+      expect(tee.keySource).toBe('env');
+      expect(tee.usingDevKey).toBe(false);
+    } finally {
+      delete process.env.ATTESTOR_SECRET_KEY;
+    }
+  });
+});
