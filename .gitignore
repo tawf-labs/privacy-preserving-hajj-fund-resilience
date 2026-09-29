@@ -1,0 +1,22 @@
+node_modules/
+dist/
+.turbo/
+*.log
+.env
+.env.local
+.DS_Store
+coverage/
+
+# Foundry
+contracts/out/
+contracts/cache/
+contracts/broadcast/*/31337/
+
+# Noir: keep the committed circuit artifact + vk, ignore scratch outputs
+circuits/**/target/*
+!circuits/**/target/hajj_solvency.json
+!circuits/**/target/vk
+!circuits/**/target/vk_evm
+
+# Evaluation scratch
+evaluation/.cache/

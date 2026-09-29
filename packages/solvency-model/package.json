@@ -1,0 +1,17 @@
+{
+  "name": "@hajj-zk/solvency-model",
+  "version": "0.1.0",
+  "description": "Layer 1: deterministic Hajj-fund solvency model (SR = F / PVO) under Baseline, Moderate and Acute stress regimes, with a bit-exact fixed-point reference of the Noir circuit.",
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "test": "vitest run",
+    "typecheck": "tsc -p tsconfig.json",
+    "gen:ledgers": "tsx src/cli/gen-ledgers.ts"
+  },
+  "license": "Apache-2.0"
+}

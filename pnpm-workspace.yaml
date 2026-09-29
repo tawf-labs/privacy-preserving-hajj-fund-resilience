@@ -1,0 +1,8 @@
+packages:
+  - 'packages/*'
+  - 'apps/*'
+  - 'evaluation'
+onlyBuiltDependencies:
+  - '@foundry-rs/forge'
+  - '@foundry-rs/anvil'
+  - esbuild

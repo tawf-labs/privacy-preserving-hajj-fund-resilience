@@ -1,0 +1,143 @@
+{
+  "$comment": "SYNTHETIC fund states used by the stress-test evaluation. Magnitudes follow publicly reported orders of magnitude for BPKH (Rp 170-210 T under management, ~5.4 M waiting pilgrims at Rp 25 jt setoran awal, Rp 34-46 jt nilai manfaat per pilgrim); they are NOT BPKH data. Money in Rp ribu.",
+  "states": [
+    {
+      "id": "healthy",
+      "label": "Healthy",
+      "seed": 1447,
+      "waitlistPilgrims": 5400000,
+      "waitlistDeposits": "135000000000",
+      "subsidyPerPilgrim": "33900",
+      "classes": [
+        {
+          "assetClass": "sbsn",
+          "total": "120000000000",
+          "returnBps": 680,
+          "positions": 48
+        },
+        {
+          "assetClass": "corporate_sukuk",
+          "total": "17000000000",
+          "returnBps": 760,
+          "positions": 24
+        },
+        {
+          "assetClass": "sharia_deposits",
+          "total": "45000000000",
+          "returnBps": 520,
+          "positions": 36
+        },
+        {
+          "assetClass": "direct_investment",
+          "total": "5000000000",
+          "returnBps": 900,
+          "positions": 8
+        },
+        {
+          "assetClass": "gold",
+          "total": "7000000000",
+          "returnBps": 0,
+          "positions": 6
+        },
+        {
+          "assetClass": "cash",
+          "total": "9000000000",
+          "returnBps": 100,
+          "positions": 28
+        }
+      ]
+    },
+    {
+      "id": "strained",
+      "label": "Strained",
+      "seed": 1448,
+      "waitlistPilgrims": 5400000,
+      "waitlistDeposits": "135000000000",
+      "subsidyPerPilgrim": "40500",
+      "classes": [
+        {
+          "assetClass": "sbsn",
+          "total": "93000000000",
+          "returnBps": 640,
+          "positions": 44
+        },
+        {
+          "assetClass": "corporate_sukuk",
+          "total": "22000000000",
+          "returnBps": 780,
+          "positions": 26
+        },
+        {
+          "assetClass": "sharia_deposits",
+          "total": "39000000000",
+          "returnBps": 500,
+          "positions": 32
+        },
+        {
+          "assetClass": "direct_investment",
+          "total": "14000000000",
+          "returnBps": 950,
+          "positions": 12
+        },
+        {
+          "assetClass": "gold",
+          "total": "2000000000",
+          "returnBps": 0,
+          "positions": 4
+        },
+        {
+          "assetClass": "cash",
+          "total": "5600000000",
+          "returnBps": 100,
+          "positions": 20
+        }
+      ]
+    },
+    {
+      "id": "deteriorating",
+      "label": "Deteriorating",
+      "seed": 1449,
+      "waitlistPilgrims": 5400000,
+      "waitlistDeposits": "135000000000",
+      "subsidyPerPilgrim": "46000",
+      "classes": [
+        {
+          "assetClass": "sbsn",
+          "total": "82000000000",
+          "returnBps": 600,
+          "positions": 40
+        },
+        {
+          "assetClass": "corporate_sukuk",
+          "total": "24000000000",
+          "returnBps": 800,
+          "positions": 26
+        },
+        {
+          "assetClass": "sharia_deposits",
+          "total": "31000000000",
+          "returnBps": 480,
+          "positions": 28
+        },
+        {
+          "assetClass": "direct_investment",
+          "total": "20000000000",
+          "returnBps": 1000,
+          "positions": 14
+        },
+        {
+          "assetClass": "gold",
+          "total": "1000000000",
+          "returnBps": 0,
+          "positions": 2
+        },
+        {
+          "assetClass": "cash",
+          "total": "3000000000",
+          "returnBps": 100,
+          "positions": 16
+        }
+      ]
+    }
+  ]
+}

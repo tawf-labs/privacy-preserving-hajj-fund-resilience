@@ -1,0 +1,37 @@
+{
+  "name": "privacy-preserving-hajj-fund-resilience",
+  "version": "0.1.0",
+  "description": "Zero-knowledge verification of Hajj fund (BPKH) solvency under stress scenarios, with attested inputs, on-chain public verification and the Data Exposure Reduction (DER) metric.",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "setup:crs": "bash scripts/setup-crs.sh",
+    "build:circuit": "pnpm --filter @hajj-zk/prover compile",
+    "test": "pnpm -r --workspace-concurrency=1 test",
+    "test:circuit": "pnpm --filter @hajj-zk/prover test",
+    "test:contracts": "bash scripts/forge.sh test -vv",
+    "fixtures": "pnpm --filter @hajj-zk/prover fixtures",
+    "eval": "pnpm --filter @hajj-zk/evaluation eval",
+    "attestor": "pnpm --filter @hajj-zk/attestor start",
+    "portal": "pnpm --filter @hajj-zk/portal dev",
+    "typecheck": "pnpm -r typecheck",
+    "e2e": "bash scripts/e2e-pipeline.sh"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "tsx": "^4.20.0",
+    "typescript": "^5.8.0",
+    "vitest": "^3.2.0"
+  },
+  "engines": {
+    "node": ">=22.0.0",
+    "pnpm": ">=9.0.0"
+  },
+  "packageManager": "pnpm@10.33.0",
+  "author": "Tawf Labs",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tawf-labs/privacy-preserving-hajj-fund-resilience"
+  }
+}
