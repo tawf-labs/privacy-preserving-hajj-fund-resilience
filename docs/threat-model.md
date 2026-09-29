@@ -23,8 +23,11 @@ still simulated.
 
 1. **Compromised or dishonest attestor.** A proof is only as good as the attestor's key and checks. The attestor can sign a false witness. In production the key must be
    sealed in an attested TEE and the enclave measurement pinned by the regulator; several independent attestors (threshold or multi-signature) would remove the single point of failure.
-2. **The simulated TEE is not a TEE.** `SimulatedEnclave` runs as an ordinary process. Its `report` is a signed JSON document, not a hardware quote, and `enclaveMeasurement` is a hash
-   of the source files. There is no protection against the host operator. TEEs also have their own side-channel exposure (Guo et al., 2025).
+2. **Off Phala, the TEE is simulated.** Run as an ordinary process, `SimulatedEnclave` has no protection against the host operator;
+   its `report` is a signed JSON document and `enclaveMeasurement` is a hash of the source files. On Phala (`deploy/phala`) the key
+   is derived by the dstack KMS inside a TDX confidential VM and the report carries a real quote, but nothing in this repository yet
+   verifies that quote end to end, the base image is pulled by tag, and dependencies are installed at boot. TEEs also have their own
+   side-channel exposure (Guo et al., 2025).
 3. **Compromised source registry.** Source digests are read from `data/synthetic/sources/registry.json`. In production they must arrive over authenticated channels
    (issuer signatures or TLS-notarised fetches); whoever controls the registry controls what counts as authentic.
 4. **Public dev key.** Without `ATTESTOR_SECRET_KEY`, the attestor uses a key committed to the repository. `GET /info` reports `usingDevKey`.

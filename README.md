@@ -132,10 +132,11 @@ scripts/                  e2e pipeline, forge wrapper, SRS setup
 
 * **The proof verifies computation, not truth.** It shows the three bits follow from the attested inputs. Whether the
   inputs are true is the oracle problem, addressed by Layer 2. Governance of that layer is where trust sits.
-* **The TEE is simulated.** The attestor authenticates inputs against digests in a registry file and signs with a
-  secp256k1 key. There is no hardware root of trust: `phala.config.json` and the Dockerfile are provided so it can
-  move into a Phala dstack / TDX enclave, where the key would be sealed and a real quote replace `report`. The default
-  dev key is public; set `ATTESTOR_SECRET_KEY` for anything else.
+* **The TEE is real only when deployed on Phala.** Locally the attestor is a plain process: it authenticates inputs against
+  digests in a registry file and signs with a secp256k1 key, and its `report` is a signed JSON document (the default dev key is
+  public; set `ATTESTOR_SECRET_KEY` for anything else). Deployed with [`deploy/phala`](deploy/phala/README.md), the key is derived
+  inside an Intel TDX confidential VM by Phala's KMS and the report carries a real TDX quote. That quote is not yet
+  verified end to end by anything in this repo, and the source registry is still a file in the pinned commit.
 * **Three result bits are public** by design and reveal whether SR ≥ τ in each regime. DER measures volume, not
   information content.
 * **Synthetic and stylised.** The model is a deterministic, deliberately simple liability/asset projection, not BPKH's
