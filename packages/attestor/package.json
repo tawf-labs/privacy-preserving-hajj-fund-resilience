@@ -18,9 +18,8 @@
     "@hajj-zk/prover": "workspace:*",
     "@hajj-zk/solvency-model": "workspace:*",
     "@hono/node-server": "^1.14.0",
-    "hono": "^4.7.0",
     "@noble/curves": "^2.0.0",
-    "@phala/dstack-sdk": "^0.5.8",
+    "hono": "^4.7.0",
     "tsx": "^4.20.0"
   },
   "license": "Apache-2.0"

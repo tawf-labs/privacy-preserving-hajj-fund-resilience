@@ -21,7 +21,7 @@
  * with `enclaveMeasurement` (a hash of the source files) standing in for MRTD.
  */
 import { createHash, randomBytes } from 'node:crypto';
-import { existsSync, readdirSync, readFileSync } from 'node:fs';
+import { readdirSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
@@ -44,6 +44,7 @@ import {
 import { validate, witnessToJson, type Ledger, type PrivateWitnessJson, type PublicParams } from '@hajj-zk/solvency-model';
 import { secp256k1 } from '@noble/curves/secp256k1.js';
 import { canonicalJson, sha256Hex } from './canonical.js';
+import { dstackAvailable, getKmsKey, getTdxQuote } from './dstack.js';
 import {
   AttestationError,
   authenticateSources,
@@ -84,7 +85,6 @@ export type KeySource = 'env' | 'dstack-kms' | 'dev';
 /** Returns a TDX quote whose report_data is the given 32 bytes. */
 export type QuoteFn = (reportData: Uint8Array) => Promise<string>;
 
-export const DSTACK_SOCKET = process.env.DSTACK_SOCKET ?? '/var/run/dstack.sock';
 const KMS_KEY_PATH = 'hajj-zk/attestor/secp256k1/v1';
 
 export interface AttestationResult {
@@ -138,11 +138,9 @@ export class SimulatedEnclave {
    */
   static async fromEnvironment(registry: SourceRegistry = loadRegistry()): Promise<SimulatedEnclave> {
     const explicit = process.env.ATTESTOR_SECRET_KEY;
-    if (explicit || !existsSync(DSTACK_SOCKET)) return new SimulatedEnclave(registry, explicit);
+    if (explicit || !dstackAvailable()) return new SimulatedEnclave(registry, explicit);
 
-    const { DstackClient } = await import('@phala/dstack-sdk');
-    const client = new DstackClient(DSTACK_SOCKET);
-    const { key } = await client.getKey(KMS_KEY_PATH, 'signing');
+    const key = await getKmsKey(KMS_KEY_PATH, 'signing');
     // Expand the KMS key material into a valid secp256k1 scalar (domain-separated, rejection-sampled).
     let secret: Uint8Array | undefined;
     for (let i = 0; i < 256 && !secret; i++) {
@@ -150,7 +148,7 @@ export class SimulatedEnclave {
       if (secp256k1.utils.isValidSecretKey(cand)) secret = cand;
     }
     if (!secret) throw new Error('could not derive a valid secp256k1 key from the KMS');
-    const quoteFn: QuoteFn = async (data) => (await client.getQuote(data)).quote;
+    const quoteFn: QuoteFn = getTdxQuote;
     return new SimulatedEnclave(registry, Buffer.from(secret).toString('hex'), { keySource: 'dstack-kms', quoteFn });
   }
 

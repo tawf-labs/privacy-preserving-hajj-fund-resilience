@@ -21,9 +21,10 @@ services:
       - bash
       - -euc
       - |
-        git clone --quiet https://github.com/tawf-labs/privacy-preserving-hajj-fund-resilience /app
+        # Idempotent: the container filesystem survives restarts, so only clone once.
+        [ -d /app/.git ] || git clone --quiet https://github.com/tawf-labs/privacy-preserving-hajj-fund-resilience /app
         cd /app
-        git checkout --quiet "$$COMMIT"
+        git checkout --quiet --force "$$COMMIT"
         test "$$(git rev-parse HEAD)" = "$$COMMIT"
         corepack enable
         pnpm install --frozen-lockfile --filter '@hajj-zk/attestor...'
