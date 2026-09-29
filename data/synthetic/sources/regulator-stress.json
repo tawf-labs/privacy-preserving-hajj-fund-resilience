@@ -1,0 +1,11 @@
+{
+  "source": "Supervisory stress-scenario circular (synthetic)",
+  "document": "Solvency threshold and stress regimes for Hajj fund resilience verification",
+  "periodId": 202701,
+  "tauBps": 10000,
+  "scenarios": [
+    { "name": "Baseline", "inflationBps": 300, "fxIdrPerSar": 4300, "discountBps": 650, "yieldShockBps": 0, "haircutBps": [100, 300, 0, 1500, 0, 0] },
+    { "name": "Moderate", "inflationBps": 450, "fxIdrPerSar": 4730, "discountBps": 650, "yieldShockBps": 1500, "haircutBps": [300, 800, 100, 2500, 0, 0] },
+    { "name": "Acute", "inflationBps": 800, "fxIdrPerSar": 5375, "discountBps": 600, "yieldShockBps": 3500, "haircutBps": [1000, 2500, 300, 4500, 0, 0] }
+  ]
+}

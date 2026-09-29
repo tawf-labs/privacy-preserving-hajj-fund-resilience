@@ -1,0 +1,14 @@
+{
+  "periodId": 202701,
+  "macro": {
+    "biInflation": "d6d85afd2505ed9517bd2068d1004e06e7701b5c096283eea9c5c6575a7fb330",
+    "jisdorFx": "20d538a4a960252a53256ffaa23d2fcaf44d37af59fb8cba857717cad57cbecc",
+    "kemenagQuota": "37d6b79ea477874533c8a2487624a8d42f134b1ed41a675a868af53d0830baa5",
+    "regulatorStress": "5f161278d266a1f4cd8da5c778c9384f42ed197a7eaa72e1fd3f83fe09fa3654"
+  },
+  "ledgers": {
+    "deteriorating": "4b63718a4d153b589986627844cb497866136caa424959c805b3c1a5fb2ec292",
+    "healthy": "867ff93845e19a129edc8726b476ceed58a1d5e778906c8077186a9a5391f96c",
+    "strained": "99f5780760690318dfcc65a99db3f69a6d9bd46d6337257a182d6f4943002126"
+  }
+}

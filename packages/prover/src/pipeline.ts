@@ -22,7 +22,8 @@ import {
 import { DATA_DIR } from './paths.js';
 
 export function loadPublicParams(path = join(DATA_DIR, 'public-params.json')): PublicParams {
-  return JSON.parse(readFileSync(path, 'utf8'));
+  const { $comment: _comment, ...params } = JSON.parse(readFileSync(path, 'utf8'));
+  return params as PublicParams;
 }
 
 export function loadLedger(stateId: string): Ledger {

@@ -21,6 +21,21 @@ importers:
         specifier: ^3.2.0
         version: 3.2.7(@types/node@22.20.4)(tsx@4.23.15)
 
+  packages/attestor:
+    dependencies:
+      '@hajj-zk/prover':
+        specifier: workspace:*
+        version: link:../prover
+      '@hajj-zk/solvency-model':
+        specifier: workspace:*
+        version: link:../solvency-model
+      '@hono/node-server':
+        specifier: ^1.14.0
+        version: 1.19.17(hono@4.13.11)
+      hono:
+        specifier: ^4.7.0
+        version: 4.13.11
+
   packages/prover:
     dependencies:
       '@aztec/bb.js':
@@ -202,6 +217,12 @@ packages:
     engines: {node: '>=18'}
     cpu: [x64]
     os: [win32]
+
+  '@hono/node-server@1.19.17':
+    resolution: {integrity: sha512-dSneS5qhiauZWGDCeK4o695Xd9nUNjviSZCMQrj10eetr8Uln1ucn6bbphOM6UynAMMtNIzZNSpL9vnASJwrPQ==}
+    engines: {node: '>=18.14.1'}
+    peerDependencies:
+      hono: ^4
 
   '@jridgewell/sourcemap-codec@1.6.0':
     resolution: {integrity: sha512-T7jf+5zgsZHwNJ4lvQ7/aezbyk0nNX+zJVWpmHA7VYsEx7a7qr5Rg5IbtJFqkgze5Y2sruq1RUY8Q837Od7iFw==}
@@ -514,6 +535,10 @@ packages:
     engines: {node: ^8.16.0 || ^10.6.0 || >=11.0.0}
     os: [darwin]
 
+  hono@4.13.11:
+    resolution: {integrity: sha512-/SMX/RQNJn7oNmFwH6DtwDqcrzZU2otm1FD6OJe2cWF6cfy/F8hq0XVBv7xW3FTJshRQwuBnXHDq2kNsdZnshg==}
+    engines: {node: '>=16.9.0'}
+
   idb-keyval@6.3.0:
     resolution: {integrity: sha512-um+2dgAWmYsu615EXpWVwSmapJhON0G43t3Ka/EVaohzPQXSMqKEqeDK/oIW3Ow+BXaF2PvSc+oBTFp793A5Ow==}
 
@@ -795,6 +820,10 @@ snapshots:
   '@esbuild/win32-x64@0.28.2':
     optional: true
 
+  '@hono/node-server@1.19.17(hono@4.13.11)':
+    dependencies:
+      hono: 4.13.11
+
   '@jridgewell/sourcemap-codec@1.6.0': {}
 
   '@msgpackr-extract/msgpackr-extract-darwin-arm64@3.0.4':
@@ -1044,6 +1073,8 @@ snapshots:
 
   fsevents@2.3.3:
     optional: true
+
+  hono@4.13.11: {}
 
   idb-keyval@6.3.0: {}
 
