@@ -1,0 +1,7 @@
+[package]
+name = "hajj_solvency"
+type = "bin"
+authors = ["Tawf Labs"]
+compiler_version = ">=1.0.0-rc.3"
+
+[dependencies]

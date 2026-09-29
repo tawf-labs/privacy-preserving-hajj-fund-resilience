@@ -1,0 +1,14 @@
+[
+  {
+    "state": "healthy",
+    "file": "healthy.json"
+  },
+  {
+    "state": "strained",
+    "file": "strained.json"
+  },
+  {
+    "state": "deteriorating",
+    "file": "deteriorating.json"
+  }
+]
