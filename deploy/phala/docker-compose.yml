@@ -1,0 +1,32 @@
+# Layer 2 attestor inside a Phala Cloud confidential VM (Intel TDX, dstack).
+#
+# The code is cloned at a PINNED commit at boot, so the commit is part of this file and therefore of the
+# compose hash that Phala attests. The signing key is derived inside the TEE from the dstack KMS
+# (/var/run/dstack.sock): no secret is passed in and no human holds the key.
+#
+#   phala deploy --compose deploy/phala/docker-compose.yml --name hajj-attestor -t tdx.medium --wait
+#
+# To upgrade, change COMMIT and redeploy; the compose hash (and the attested app identity) changes with it.
+services:
+  attestor:
+    image: node:22-bookworm
+    ports:
+      - "80:8787"
+    volumes:
+      - /var/run/dstack.sock:/var/run/dstack.sock
+    environment:
+      - PORT=8787
+      - COMMIT=9ba9f05a8d7c6302b0acaf554b13c86b24be6cea
+    command:
+      - bash
+      - -euc
+      - |
+        git clone --quiet https://github.com/tawf-labs/privacy-preserving-hajj-fund-resilience /app
+        cd /app
+        git checkout --quiet "$$COMMIT"
+        test "$$(git rev-parse HEAD)" = "$$COMMIT"
+        corepack enable
+        pnpm install --frozen-lockfile --filter '@hajj-zk/attestor...'
+        bash scripts/setup-crs.sh
+        exec pnpm --filter @hajj-zk/attestor start
+    restart: unless-stopped
