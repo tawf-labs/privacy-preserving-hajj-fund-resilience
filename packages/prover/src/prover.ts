@@ -68,3 +68,22 @@ export class SolvencyProver {
     return backend.getSolidityVerifier(await this.verificationKey(), { verifierTarget: VERIFIER_TARGET });
   }
 }
+
+export interface CircuitStatsResult {
+  acirOpcodes: number;
+  gates: number;
+  gatesDyadic: number;
+}
+
+/** Gate / opcode counts for the compiled circuit, straight from Barretenberg. */
+export async function circuitStats(program: CompiledCircuit): Promise<CircuitStatsResult> {
+  const { gunzipSync } = await import('node:zlib');
+  const bytecode = new Uint8Array(gunzipSync(Buffer.from(program.bytecode, 'base64')));
+  const bb = await getBarretenberg();
+  const res = await bb.circuitStats({
+    circuit: { name: 'hajj_solvency', bytecode, verificationKey: new Uint8Array() },
+    includeGatesPerOpcode: false,
+    settings: { ipaAccumulation: false, oracleHashType: 'keccak', disableZk: false, optimizedSolidityVerifier: false },
+  });
+  return { acirOpcodes: res.numAcirOpcodes, gates: res.numGates, gatesDyadic: res.numGatesDyadic };
+}

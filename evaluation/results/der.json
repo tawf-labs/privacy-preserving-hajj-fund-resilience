@@ -1,0 +1,80 @@
+{
+  "generatedAt": "2026-09-29T17:03:37.456Z",
+  "rows": [
+    {
+      "state": "healthy",
+      "positions": 150,
+      "auditBytes": 35981,
+      "auditFields": 1353,
+      "aggregateBytes": 460,
+      "proofBundleBytes": 22202,
+      "proofBytes": 9152,
+      "publicParamBytes": 498,
+      "witnessDerivedBytes": 65,
+      "derLimiting": 0.9999722075539869,
+      "derConservative": 0.9981934910091437,
+      "derAggregateReport": 0.9872154748339401,
+      "derAllPublishedBytes": 0.3829521136155193,
+      "fieldLevel": {
+        "sensitiveFields": 1353,
+        "sensitiveFieldsDisclosed": 0,
+        "derField": 1
+      },
+      "variableLevel": {
+        "privateVars": 4,
+        "privateVarsDisclosed": 0,
+        "publicVars": 7
+      }
+    },
+    {
+      "state": "strained",
+      "positions": 138,
+      "auditBytes": 33643,
+      "auditFields": 1245,
+      "aggregateBytes": 461,
+      "proofBundleBytes": 22203,
+      "proofBytes": 9152,
+      "publicParamBytes": 498,
+      "witnessDerivedBytes": 65,
+      "derLimiting": 0.9999702761347086,
+      "derConservative": 0.9980679487560562,
+      "derAggregateReport": 0.986297298100645,
+      "derAllPublishedBytes": 0.3400410189341022,
+      "fieldLevel": {
+        "sensitiveFields": 1245,
+        "sensitiveFieldsDisclosed": 0,
+        "derField": 1
+      },
+      "variableLevel": {
+        "privateVars": 4,
+        "privateVarsDisclosed": 0,
+        "publicVars": 7
+      }
+    },
+    {
+      "state": "deteriorating",
+      "positions": 126,
+      "auditBytes": 30612,
+      "auditFields": 1137,
+      "aggregateBytes": 462,
+      "proofBundleBytes": 22204,
+      "proofBytes": 9152,
+      "publicParamBytes": 498,
+      "witnessDerivedBytes": 65,
+      "derLimiting": 0.9999673330719979,
+      "derConservative": 0.9978766496798641,
+      "derAggregateReport": 0.9849078792630341,
+      "derAllPublishedBytes": 0.27466353064157845,
+      "fieldLevel": {
+        "sensitiveFields": 1137,
+        "sensitiveFieldsDisclosed": 0,
+        "derField": 1
+      },
+      "variableLevel": {
+        "privateVars": 4,
+        "privateVarsDisclosed": 0,
+        "publicVars": 7
+      }
+    }
+  ]
+}

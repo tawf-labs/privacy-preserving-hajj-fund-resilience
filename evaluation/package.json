@@ -1,0 +1,20 @@
+{
+  "name": "@hajj-zk/evaluation",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Evaluation harness for the paper's Section IV: financial stress test, cryptographic benchmark and Data Exposure Reduction (DER).",
+  "type": "module",
+  "scripts": {
+    "eval": "tsx src/run-all.ts",
+    "eval:stress": "tsx src/stress.ts",
+    "eval:bench": "tsx src/bench.ts",
+    "eval:der": "tsx src/der.ts",
+    "test": "vitest run",
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "@hajj-zk/prover": "workspace:*",
+    "@hajj-zk/solvency-model": "workspace:*"
+  },
+  "license": "Apache-2.0"
+}
