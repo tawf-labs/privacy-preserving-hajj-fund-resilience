@@ -1,0 +1,31 @@
+{
+  "name": "@hajj-zk/portal",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Layer 4: public verification portal. Lists solvency proofs, re-verifies them in the browser with Barretenberg and cross-checks the on-chain registry.",
+  "type": "module",
+  "scripts": {
+    "sync-data": "node scripts/sync-data.mjs",
+    "dev": "pnpm sync-data && vite",
+    "build": "pnpm sync-data && tsc -p tsconfig.json && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc -p tsconfig.json",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@aztec/bb.js": "5.2.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "react-router-dom": "^7.6.0",
+    "viem": "^2.31.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.1.0",
+    "@types/react": "^19.1.0",
+    "@types/react-dom": "^19.1.0",
+    "@vitejs/plugin-react": "^5.0.0",
+    "tailwindcss": "^4.1.0",
+    "vite": "^7.0.0"
+  },
+  "license": "Apache-2.0"
+}
