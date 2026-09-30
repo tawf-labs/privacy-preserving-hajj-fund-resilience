@@ -111,7 +111,16 @@ cd contracts && bash ../scripts/forge.sh script script/Deploy.s.sol --rpc-url se
 
 Then have the regulator call `pinPeriod` with the first 36 public inputs of a bundle, have the fund call
 `submitProof`, and set `VITE_REGISTRY_ADDRESS` so the portal cross-checks proofs against the on-chain record.
-Both contracts fit the 24 KB limit (verifier 17.7 KB, registry 5.0 KB). **Not yet deployed**: this needs your RPC and funded key.
+Both contracts fit the 24 KB limit (verifier 17.7 KB, registry 5.0 KB).
+
+**Deployed on Sepolia:**
+
+| Contract | Address | Source |
+| --- | --- | --- |
+| `HonkVerifier` | [`0x1d160aa5fA6Ae07350cbf8e896450DA6c4160d29`](https://sepolia.etherscan.io/address/0x1d160aa5fA6Ae07350cbf8e896450DA6c4160d29) | [Sourcify](https://repo.sourcify.dev/contracts/full_match/11155111/0x1d160aa5fA6Ae07350cbf8e896450DA6c4160d29/) |
+| `HajjSolvencyRegistry` | [`0x0e441132A6Afd5CEf7CE1C28Ab62E50268099A15`](https://sepolia.etherscan.io/address/0x0e441132A6Afd5CEf7CE1C28Ab62E50268099A15) | [Sourcify](https://repo.sourcify.dev/contracts/full_match/11155111/0x0e441132A6Afd5CEf7CE1C28Ab62E50268099A15/) |
+
+Admin, regulator and prover roles are all held by the deploying address for this demo deployment — replace with distinct multisigs before treating this as anything other than a testnet demo.
 
 ## Repository layout
 
